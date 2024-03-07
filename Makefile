@@ -1,37 +1,36 @@
 NAME = fractol
-CC = cc
-CFLAGS = -Wall -Wextra -Werror
-SOURCES = main.c
-			
-			
-OBJ = ${SOURCES:.c=.o}
 
-#Minilibx
-# MLX_PATH	= minilibx_mms_20191025_beta/
-# MLX_NAME	= libmlx.a
-# MLX			= $(MLX_PATH)$(MLX_NAME)
+LIBFT = ./libft/libft.a
 
-#Libft
-LIBFT_PATH = ./libft
-LIBFT = $(LIBFT_PATH)/libft.a
+MLX42 = ./MLX42/build/libmlx42.a
 
-all: $(NAME)
+SRCS = main.c \
 
-$(NAME): $(LIBFT) $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) $(LIBFT) -Lmlx -lmlx -framework OpenGL -framework AppKit -o $(NAME)
+CFLAGS = -g -Wall -Wextra -Werror
 
-%.o:%.c
-	$(CC) $(CFLAGS) -Imlx -c $< -o $@
+MLX42FLAGS = -Iinclude -lglfw -L"/Users/aheinane/.brew/opt/glfw/lib/"
+
+all: ${NAME}
+
+${NAME}: ${SRCS} $(LIBFT) $(MLX42)
+	cc $(CFLAGS) $^ -o $@ $(LIBFT) $(MLX42) $(MLX42FLAGS)
+
 $(LIBFT):
-	make -C $(LIBFT_PATH) all
+	make -C libft/
+
+$(MLX42):
+	cd MLX42 && cmake -B build
+	cd MLX42 && cmake --build build -j4
+	make -C MLX42/build -j4
 
 clean:
-	make -C $(LIBFT_PATH) clean
-	rm -rf $(OBJ)
+	make clean -C libft
+	make clean -C MLX42/build
 
 fclean: clean
-	make -C $(LIBFT_PATH) fclean
-	rm -f $(NAME)
+	rm -f ${NAME} ${NAME_BONUS}
+	make fclean -C libft
+	make clean -C MLX42/build
 
 re: fclean all
 

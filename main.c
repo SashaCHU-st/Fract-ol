@@ -1,31 +1,43 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: aheinane <aheinane@student.hive.fi>        +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/05 16:09:33 by aheinane          #+#    #+#             */
-/*   Updated: 2024/03/05 16:34:56 by aheinane         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#include "MLX42/include/MLX42/MLX42.h"
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+//#include "MLX42/MLX42.h"
+#define WIDTH 512
+#define HEIGHT 512
 
-
-#include <mlx.h>
-
-// int main (int argc, char **argv)
-// {
-// 	if(argc == 2)
-		
-// 	return(0);
-		
-// }
-int	main(void)
+static void error(void)
 {
-	void	*mlx;
-	void	*mlx_win;
-
-	mlx = mlx_init();
-	mlx_win = mlx_new_window(mlx, 1920, 1080, "Hello world!");
-	mlx_loop(mlx);
+	puts(mlx_strerror(mlx_errno));
+	exit(EXIT_FAILURE);
 }
+
+int32_t	main(void)
+{
+	// Start mlx
+	mlx_t* mlx = mlx_init(WIDTH, HEIGHT, "Test", true);
+	if (!mlx)
+        error();
+
+	// Try to load the file
+	mlx_texture_t* texture = mlx_load_png("./temp/sus.png");
+	if (!texture)
+        error();
+	
+	// Convert texture to a displayable image
+	mlx_image_t* img = mlx_texture_to_image(mlx, texture);
+	if (!img)
+        error();
+
+	// Display the image
+	if (mlx_image_to_window(mlx, img, 0, 0) < 0)
+        error();
+
+	mlx_loop(mlx);
+
+	// Optional, terminate will clean up any leftovers, this is just to demonstrate.
+	mlx_delete_image(mlx, img);
+	mlx_delete_texture(texture);
+	mlx_terminate(mlx);
+	return (EXIT_SUCCESS);
+}//
