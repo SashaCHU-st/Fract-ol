@@ -1,43 +1,48 @@
 #include "MLX42/include/MLX42/MLX42.h"
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-//#include "MLX42/MLX42.h"
-#define WIDTH 512
-#define HEIGHT 512
+#include "ft_fractol.h"
 
-static void error(void)
+static mlx_image_t *image;
+int main (int argc, char **argv)
 {
-	puts(mlx_strerror(mlx_errno));
-	exit(EXIT_FAILURE);
-}
 
-int32_t	main(void)
-{
-	// Start mlx
-	mlx_t* mlx = mlx_init(WIDTH, HEIGHT, "Test", true);
-	if (!mlx)
-        error();
-
-	// Try to load the file
-	mlx_texture_t* texture = mlx_load_png("./temp/sus.png");
-	if (!texture)
-        error();
+	t_fractol fractol;
 	
-	// Convert texture to a displayable image
-	mlx_image_t* img = mlx_texture_to_image(mlx, texture);
-	if (!img)
-        error();
 
-	// Display the image
-	if (mlx_image_to_window(mlx, img, 0, 0) < 0)
-        error();
+	if ((argc == 2 && !ft_strncmp(argv[1], "mandelbrot", 10))
+		|| (argc == 4 && !ft_strncmp(argv[1], "julia", 5)))
+	{
+		fractol.name = argv[1];
+		fractol_init(&fractol);
+		//fractol_render(&fractol);
+		mlx_loop(fractol.mlx_connection);
+	}
 
-	mlx_loop(mlx);
+	else
+	{
+		ft_putstr_fd("wrong variables", 2);
+		exit(1);
+	}
 
-	// Optional, terminate will clean up any leftovers, this is just to demonstrate.
-	mlx_delete_image(mlx, img);
-	mlx_delete_texture(texture);
-	mlx_terminate(mlx);
-	return (EXIT_SUCCESS);
-}//
+}
+void fractol_init(t_fractol *fractol)
+{
+	mlx_t *mlx;
+	if(!(fractol->mlx_connection = mlx_init(WIDTH, HEIGHT, "MLX42", true)))
+		return ;////
+	if(!(fractol->mlx_window = mlx_image_to_window(mlx, image, 0, 0)))
+	{
+		mlx_close_window(mlx);
+		free(fractol->mlx_connection);
+	}
+	if(!(fractol->img.image_ptr = mlx_new_image(mlx, 128, 128)))
+	{
+		mlx_close_window(mlx);
+		free(fractol->mlx_connection);
+	}
+	if (mlx_image_to_window(mlx, image, 0, 0) == -1)
+	{
+		mlx_close_window(mlx);
+		puts(mlx_strerror(mlx_errno));
+		return ;
+	}
+}

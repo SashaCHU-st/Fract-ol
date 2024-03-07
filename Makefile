@@ -5,8 +5,10 @@ LIBFT = ./libft/libft.a
 MLX42 = ./MLX42/build/libmlx42.a
 
 SRCS = main.c \
+		#utils.c \
 
-CFLAGS = -g -Wall -Wextra -Werror
+
+CFLAGS = -g
 
 MLX42FLAGS = -Iinclude -lglfw -L"/Users/aheinane/.brew/opt/glfw/lib/"
 
