@@ -4,11 +4,12 @@ LIBFT = ./libft/libft.a
 
 MLX42 = ./MLX42/build/libmlx42.a
 
-SRCS = main.c \
+SRCS = fractol.c \
+		#fractol.c \
 		#utils.c \
 
 
-CFLAGS = -g
+CFLAGS = -g -Wall -Wextra -Werror
 
 MLX42FLAGS = -Iinclude -lglfw -L"/Users/aheinane/.brew/opt/glfw/lib/"
 
