@@ -6,7 +6,7 @@
 /*   By: aheinane <aheinane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 09:58:01 by aheinane          #+#    #+#             */
-/*   Updated: 2024/03/27 12:00:59 by aheinane         ###   ########.fr       */
+/*   Updated: 2024/03/27 12:54:22 by aheinane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ void init(t_fractol *fractol)
     fractol->max_x = 1.0;  // real
     fractol->min_y = -1.0; // imaginary
     fractol->max_y = 1.0;  // imaginary
-    fractol->max_iter = 200;
-    fractol->zoom = 1.5;
+    fractol->max_iter = 235;
+    fractol->zoom = 2;
 }
 
 void draw_mandelbrot(void *param)
@@ -55,9 +55,9 @@ void draw_mandelbrot(void *param)
             }
             if (iter < fractol->max_iter)
             {
-               double iter_smooth = iter + 1 - log2(log2(sqrt(zx * zx + zy * zy)));
-                int r = (int)(iter_smooth * 20) % 256;
-                int g = (int)(iter_smooth * 30) % 256;
+               double iter_smooth = iter +1 - log2(log2(sqrt(zx * zx + zy * zy)));
+                int r = (int)(iter_smooth * 10) % 256;
+                int g = (int)(iter_smooth * 20) % 256;
                 int b = (int)(iter_smooth * 40) % 256;
                 color = ft_pixel(r, g, b, 255);
             }
@@ -81,15 +81,12 @@ int main(int argc, char **argv) {
         ft_putstr_fd("Wrong, write M for Mandelbrot \n", 2);
         return EXIT_FAILURE;
     }
-    fractol.mlx = mlx_init(WIDTH, HEIGHT, "Mandelbrot Set", true);
-    if (!fractol.mlx)
+    if (!(fractol.mlx= mlx_init(WIDTH, HEIGHT, "Mandelbrot Set", true)))
     {
         ft_putstr_fd("Failed to initialize mlx\n", 2);
         return EXIT_FAILURE;
     }
-
-    fractol.image = mlx_new_image(fractol.mlx, WIDTH, HEIGHT);
-    if (!fractol.image)
+    if (!(fractol.image= mlx_new_image(fractol.mlx, WIDTH, HEIGHT)))
     {
         ft_putstr_fd("Failed to create image\n", 2);
         mlx_close_window(fractol.mlx);
